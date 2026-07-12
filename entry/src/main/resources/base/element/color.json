@@ -1,0 +1,36 @@
+{
+  "color": [
+    {
+      "name": "start_window_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "page_background",
+      "value": "#F5F7FA"
+    },
+    {
+      "name": "primary_color",
+      "value": "#007DFF"
+    },
+    {
+      "name": "countdown_color",
+      "value": "#FF6B00"
+    },
+    {
+      "name": "countdown_ring_track",
+      "value": "#FFE8D6"
+    },
+    {
+      "name": "recording_color",
+      "value": "#00B578"
+    },
+    {
+      "name": "text_primary",
+      "value": "#182431"
+    },
+    {
+      "name": "text_secondary",
+      "value": "#667085"
+    }
+  ]
+}

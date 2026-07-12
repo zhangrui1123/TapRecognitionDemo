@@ -1,0 +1,18 @@
+# Build outputs
+**/build/
+build/
+.hvigor/
+
+# Dependencies
+oh_modules/
+node_modules/
+
+# IDE
+.idea/
+
+# Local SDK/signing
+local.properties
+
+# Packaged artifacts
+*.hap
+*.app

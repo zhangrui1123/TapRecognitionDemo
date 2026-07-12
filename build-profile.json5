@@ -1,0 +1,56 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\zhang\\.ohos\\config\\default_TapRecognitionDemo_XyZsjucfTambrKycj9sWtHXV5GDpxh_-HjXFAnZbnzU=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "",
+          "profile": "C:\\Users\\zhang\\.ohos\\config\\default_TapRecognitionDemo_XyZsjucfTambrKycj9sWtHXV5GDpxh_-HjXFAnZbnzU=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\zhang\\.ohos\\config\\default_TapRecognitionDemo_XyZsjucfTambrKycj9sWtHXV5GDpxh_-HjXFAnZbnzU=.p12",
+          "storePassword": ""
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "targetSdkVersion": "6.1.1(24)",
+        "compatibleSdkVersion": "6.1.0(23)",
+        "runtimeOS": "HarmonyOS",
+        "buildOption": {
+          "strictMode": {
+            "caseSensitiveCheck": true,
+            "useNormalizedOHMUrl": true
+          }
+        }
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug"
+      },
+      {
+        "name": "release"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

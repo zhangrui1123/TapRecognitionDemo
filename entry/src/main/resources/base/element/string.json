@@ -1,0 +1,60 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "IMU双击识别演示"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "敲一敲识别演示入口"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "敲一敲识别"
+    },
+    {
+      "name": "accelerometer_reason",
+      "value": "采集加速度计数据用于双击识别"
+    },
+    {
+      "name": "gyroscope_reason",
+      "value": "采集陀螺仪数据用于双击识别"
+    },
+    {
+      "name": "demo_title",
+      "value": "敲一敲识别"
+    },
+    {
+      "name": "demo_hint",
+      "value": "请双击手机侧边"
+    },
+    {
+      "name": "listening",
+      "value": "正在监听..."
+    },
+    {
+      "name": "detected",
+      "value": "敲一敲"
+    },
+    {
+      "name": "start_listening",
+      "value": "开始监听"
+    },
+    {
+      "name": "stop_listening",
+      "value": "停止监听"
+    },
+    {
+      "name": "model_loading",
+      "value": "模型加载中..."
+    },
+    {
+      "name": "model_error",
+      "value": "模型加载失败"
+    },
+    {
+      "name": "warming_up",
+      "value": "传感器预热中..."
+    }
+  ]
+}

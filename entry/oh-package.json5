@@ -1,0 +1,8 @@
+{
+  "modelVersion": "6.1.1",
+  "name": "entry",
+  "description": "Tap recognition demo entry module",
+  "main": "",
+  "version": "1.0.0",
+  "dependencies": {}
+}
