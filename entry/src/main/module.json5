@@ -52,6 +52,19 @@
           ],
           "when": "inuse"
         }
+      },
+      {
+        "name": "ohos.permission.DETECT_GESTURE",
+        "reason": "$string:perm_grip_reason",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.VIBRATE"
       }
     ]
   }

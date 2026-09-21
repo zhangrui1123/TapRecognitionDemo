@@ -32,10 +32,12 @@ struct ResultPage {
       Text(`${this.userName} · ${this.actionLabel}`)
         .fontSize(16)
         .fontColor($r('app.color.text_secondary'))
-        .margin({ bottom: 8 })
+        .margin({ bottom: 4 })
 
-      Text('CSV 文件已保存到本地')
-      .margin({ bottom: 32 })
+      Text('CSV saved with English filename and action_label tag')
+        .fontSize(13)
+        .fontColor($r('app.color.text_secondary'))
+        .margin({ bottom: 32 })
 
       Column({ space: 10 }) {
         Text(`采样条数：${this.sampleCount}`)

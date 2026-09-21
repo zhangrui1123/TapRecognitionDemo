@@ -26,6 +26,15 @@ export default class EntryAbility extends UIAbility {
         return;
       }
       hilog.info(DOMAIN, 'TapRecognitionDemo', 'Succeeded in loading the content.');
+
+      // 与 SideTap 一致：沉浸式全屏，隐藏系统状态栏（自定义状态栏由 Demo 页绘制），保留底部导航手势条
+      try {
+        const mainWin = windowStage.getMainWindowSync();
+        mainWin.setWindowLayoutFullScreen(true);
+        mainWin.setWindowSystemBarEnable(['navigation']);
+      } catch (e) {
+        hilog.error(DOMAIN, 'TapRecognitionDemo', 'Failed to set immersive mode. Cause: %{public}s', JSON.stringify(e));
+      }
     });
   }
 

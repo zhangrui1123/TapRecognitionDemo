@@ -7,6 +7,7 @@ import {
   ActionConfig,
   ACTION_WINDOW_SECONDS,
   findActionByType,
+  sanitizeFileNamePart,
   SessionPhase,
   TOTAL_RECORD_SECONDS,
 } from '../model/SessionTypes';
@@ -32,11 +33,11 @@ struct CollectionPage {
 
   aboutToAppear(): void {
     const params = router.getParams() as Record<string, Object>;
-    this.userName = (params?.userName as string) ?? '';
+    this.userName = sanitizeFileNamePart((params?.userName as string) ?? '');
     const actionType = (params?.actionType as string) ?? '';
     this.selectedAction = findActionByType(actionType);
-    if (!this.selectedAction) {
-      router.replaceUrl({ url: 'pages/Index' });
+    if (this.userName.length === 0 || !this.selectedAction) {
+      router.replaceUrl({ url: 'pages/CollectionSetupPage' });
       return;
     }
     this.currentActionLabel = this.selectedAction.label;
@@ -85,7 +86,7 @@ struct CollectionPage {
     this.countdownValue = ACTION_WINDOW_SECONDS;
     this.remainingRatio = 1;
     this.statusHint = `第 ${this.segmentIndex} 段：请在 3 秒内完成「${this.selectedAction.label}」`;
-    this.recorder.setPhase(SessionPhase.RECORDING, this.selectedAction.label, this.segmentIndex);
+    this.recorder.setPhase(SessionPhase.RECORDING, this.selectedAction.tag, this.segmentIndex);
 
     this.clearTimer();
     this.segmentTimer = setInterval(() => {
@@ -137,9 +138,10 @@ struct CollectionPage {
 
     const context = getContext(this) as common.UIAbilityContext;
     const timestamp = new Date();
-    const actionTag = this.selectedAction?.type ?? 'unknown';
+    const actionTag = this.selectedAction?.tag ?? 'unknown';
+    const collectorId = sanitizeFileNamePart(this.userName);
     const fileName =
-      `imu_${this.userName}_${actionTag}_${timestamp.getFullYear()}${this.pad2(timestamp.getMonth() + 1)}` +
+      `imu_${collectorId}_${actionTag}_${timestamp.getFullYear()}${this.pad2(timestamp.getMonth() + 1)}` +
       `${this.pad2(timestamp.getDate())}_${this.pad2(timestamp.getHours())}${this.pad2(timestamp.getMinutes())}` +
       `${this.pad2(timestamp.getSeconds())}.csv`;
     const filePath = saveCsvToFilesDir(context.filesDir, fileName, this.recorder.getSamples());
@@ -148,7 +150,7 @@ struct CollectionPage {
       url: 'pages/ResultPage',
       params: {
         userName: this.userName,
-        actionLabel: this.currentActionLabel,
+        actionLabel: this.selectedAction?.tag ?? this.currentActionLabel,
         sampleCount: this.recorder.getSamples().length,
         filePath,
       },

@@ -21,6 +21,26 @@
       "value": "采集陀螺仪数据用于双击识别"
     },
     {
+      "name": "perm_grip_reason",
+      "value": "用于识别握持手，决定界面缩放方向"
+    },
+    {
+      "name": "home_title",
+      "value": "敲一敲识别"
+    },
+    {
+      "name": "home_subtitle",
+      "value": "SideTap 演示与 IMU 数据采集"
+    },
+    {
+      "name": "open_demo",
+      "value": "Demo 演示"
+    },
+    {
+      "name": "home_hint",
+      "value": "Demo：全屏小红书页面，双击侧边触发侧敲交互"
+    },
+    {
       "name": "demo_title",
       "value": "敲一敲识别"
     },
@@ -35,6 +55,14 @@
     {
       "name": "detected",
       "value": "敲一敲"
+    },
+    {
+      "name": "detected_left",
+      "value": "左敲"
+    },
+    {
+      "name": "detected_right",
+      "value": "右敲"
     },
     {
       "name": "start_listening",
@@ -55,6 +83,58 @@
     {
       "name": "warming_up",
       "value": "传感器预热中..."
+    },
+    {
+      "name": "collection_title",
+      "value": "IMU 数据采集"
+    },
+    {
+      "name": "collection_subtitle",
+      "value": "输入采集者 ID 并选择动作场景"
+    },
+    {
+      "name": "collector_id_hint",
+      "value": "采集者 ID（英文/数字，如 ZR）"
+    },
+    {
+      "name": "positive_scenario",
+      "value": "正向场景（双击）"
+    },
+    {
+      "name": "negative_scenario",
+      "value": "逆向场景（负样本）"
+    },
+    {
+      "name": "collection_note_title",
+      "value": "采集说明"
+    },
+    {
+      "name": "collection_note_1",
+      "value": "1. 每段 3 秒倒计时内完成动作，共 20 段（1 分钟）"
+    },
+    {
+      "name": "collection_note_2",
+      "value": "2. CSV 文件名与标签均为英文"
+    },
+    {
+      "name": "start_collection",
+      "value": "开始采集"
+    },
+    {
+      "name": "back_to_demo",
+      "value": "返回演示"
+    },
+    {
+      "name": "sensor_diagnostic",
+      "value": "传感器诊断"
+    },
+    {
+      "name": "collection_done",
+      "value": "采集完成"
+    },
+    {
+      "name": "back_home",
+      "value": "返回首页"
     }
   ]
 }
