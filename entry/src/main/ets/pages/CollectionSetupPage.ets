@@ -12,6 +12,12 @@ import {
 struct CollectionSetupPage {
   @State collectorId: string = '';
   @State selectedActionType: ActionType | '' = '';
+  @State strictSecondTap: boolean = false;
+
+  private isDoubleTapSelected(): boolean {
+    return this.selectedActionType === ActionType.KNOCK_TWICE_LEFT ||
+      this.selectedActionType === ActionType.KNOCK_TWICE_RIGHT;
+  }
 
   private canStartCollection(): boolean {
     return sanitizeFileNamePart(this.collectorId).length > 0 && this.selectedActionType.length > 0;
@@ -26,6 +32,7 @@ struct CollectionSetupPage {
       params: {
         userName: sanitizeFileNamePart(this.collectorId),
         actionType: this.selectedActionType,
+        strictSecondTap: this.isDoubleTapSelected() && this.strictSecondTap,
       },
     });
   }
@@ -43,11 +50,15 @@ struct CollectionSetupPage {
       .margin({ right: 8, bottom: 8 })
       .onClick(() => {
         this.selectedActionType = action.type;
+        if (!this.isDoubleTapSelected()) {
+          this.strictSecondTap = false;
+        }
       })
   }
 
   build() {
-    Column() {
+    Scroll() {
+      Column() {
       Row() {
         Button({ type: ButtonType.Circle }) {
           SymbolGlyph($r('sys.symbol.chevron_left'))
@@ -99,6 +110,29 @@ struct CollectionSetupPage {
           }, (action: ActionConfig) => action.type)
         }
         .width('100%')
+
+        if (this.isDoubleTapSelected()) {
+          Row({ space: 10 }) {
+            Column({ space: 4 }) {
+              Text('Strict second-tap timing')
+                .fontSize(14)
+                .fontWeight(FontWeight.Medium)
+                .fontColor($r('app.color.text_primary'))
+              Text('First tap before 2 s; second tap when the ring turns green (2–3 s).')
+                .fontSize(12)
+                .fontColor($r('app.color.text_secondary'))
+            }
+            .layoutWeight(1)
+            .alignItems(HorizontalAlign.Start)
+
+            Toggle({ type: ToggleType.Switch, isOn: this.strictSecondTap })
+              .onChange((isOn: boolean) => {
+                this.strictSecondTap = isOn;
+              })
+          }
+          .width('100%')
+          .margin({ top: 8 })
+        }
       }
       .width('86%')
       .padding(14)
@@ -149,39 +183,40 @@ struct CollectionSetupPage {
       .borderRadius(12)
       .margin({ top: 12 })
 
-      Blank()
+        Button($r('app.string.sensor_diagnostic'))
+          .width('86%')
+          .height(42)
+          .fontSize(14)
+          .fontColor($r('app.color.primary_color'))
+          .backgroundColor(Color.White)
+          .borderRadius(21)
+          .borderWidth(1)
+          .borderColor($r('app.color.primary_color'))
+          .margin({ top: 24, bottom: 10 })
+          .onClick(() => {
+            router.pushUrl({ url: 'pages/DiagnosticPage' });
+          })
 
-      Button($r('app.string.sensor_diagnostic'))
-        .width('86%')
-        .height(42)
-        .fontSize(14)
-        .fontColor($r('app.color.primary_color'))
-        .backgroundColor(Color.White)
-        .borderRadius(21)
-        .borderWidth(1)
-        .borderColor($r('app.color.primary_color'))
-        .margin({ bottom: 10 })
-        .onClick(() => {
-          router.pushUrl({ url: 'pages/DiagnosticPage' });
-        })
-
-      Button($r('app.string.start_collection'))
-        .width('86%')
-        .height(50)
-        .fontSize(17)
-        .fontWeight(FontWeight.Medium)
-        .backgroundColor($r('app.color.primary_color'))
-        .borderRadius(25)
-        .enabled(this.canStartCollection())
-        .opacity(this.canStartCollection() ? 1 : 0.45)
-        .margin({ bottom: 40 })
-        .onClick(() => {
-          this.startCollection();
-        })
+        Button($r('app.string.start_collection'))
+          .width('86%')
+          .height(50)
+          .fontSize(17)
+          .fontWeight(FontWeight.Medium)
+          .backgroundColor($r('app.color.primary_color'))
+          .borderRadius(25)
+          .enabled(this.canStartCollection())
+          .opacity(this.canStartCollection() ? 1 : 0.45)
+          .margin({ bottom: 40 })
+          .onClick(() => {
+            this.startCollection();
+          })
+      }
+      .width('100%')
+      .alignItems(HorizontalAlign.Center)
     }
     .width('100%')
     .height('100%')
     .backgroundColor($r('app.color.page_background'))
-    .alignItems(HorizontalAlign.Center)
+    .scrollBar(BarState.Auto)
   }
 }

@@ -3,6 +3,8 @@ export struct CountdownRingView {
   /** 剩余比例 0~1，1 为完整圆，0 为消失 */
   @Prop remainingRatio: number = 1;
   @Prop countdownValue: number = 3;
+  @Prop countdownColor: ResourceColor = $r('app.color.countdown_color');
+  @Prop unitLabel: string = '秒';
 
   build() {
     Stack({ alignContent: Alignment.Center }) {
@@ -17,16 +19,16 @@ export struct CountdownRingView {
           strokeWidth: 18,
           enableSmoothEffect: true,
         })
-        .color($r('app.color.countdown_color'))
+        .color(this.countdownColor)
         .backgroundColor($r('app.color.countdown_ring_track'))
 
       Column({ space: 2 }) {
         Text(`${this.countdownValue}`)
           .fontSize(96)
           .fontWeight(FontWeight.Bold)
-          .fontColor($r('app.color.countdown_color'))
+          .fontColor(this.countdownColor)
 
-        Text('秒')
+        Text(this.unitLabel)
           .fontSize(22)
           .fontColor($r('app.color.text_secondary'))
       }

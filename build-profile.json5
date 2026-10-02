@@ -5,13 +5,26 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\zhang\\.ohos\\config\\default_TapRecognitionDemo_XyZsjucfTambrKycj9sWtHXV5GDpxh_-HjXFAnZbnzU=.cer",
+          "certpath": "C:\\Users\\migel\\.ohos\\config\\default_TapRecognitionDemo_g2Wdm0FryAbcr-yKXmrP1fIYD0TlNW_bvH5_yB10ofg=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "",
-          "profile": "C:\\Users\\zhang\\.ohos\\config\\default_TapRecognitionDemo_XyZsjucfTambrKycj9sWtHXV5GDpxh_-HjXFAnZbnzU=.p7b",
+          "keyPassword": "0000001B2BEB7B261096EA048C83A7D8410E5A211874EDC9210F8DBF830EFC3457475803F079ECCA30F0BD",
+          "profile": "C:\\Users\\migel\\.ohos\\config\\default_TapRecognitionDemo_g2Wdm0FryAbcr-yKXmrP1fIYD0TlNW_bvH5_yB10ofg=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\zhang\\.ohos\\config\\default_TapRecognitionDemo_XyZsjucfTambrKycj9sWtHXV5GDpxh_-HjXFAnZbnzU=.p12",
-          "storePassword": ""
+          "storeFile": "C:\\Users\\migel\\.ohos\\config\\default_TapRecognitionDemo_g2Wdm0FryAbcr-yKXmrP1fIYD0TlNW_bvH5_yB10ofg=.p12",
+          "storePassword": "0000001BD0BEA2430BC987BA6034B711825795C799F5262003F2F187A4B13DE0D4238DDBFB7C40E6EC2D5B"
+        }
+      },
+      {
+        "name": "miguel",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\migel\\.ohos\\config\\miguel_TapRecognitionDemo_g2Wdm0FryAbcr-yKXmrP1fIYD0TlNW_bvH5_yB10ofg=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B2A76AE83A1123BA9AF23A8769C4C4B8FBCD3579747DE0D0A79548D77799887D223D0957FA2ED09",
+          "profile": "C:\\Users\\migel\\.ohos\\config\\miguel_TapRecognitionDemo_g2Wdm0FryAbcr-yKXmrP1fIYD0TlNW_bvH5_yB10ofg=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\migel\\.ohos\\config\\miguel_TapRecognitionDemo_g2Wdm0FryAbcr-yKXmrP1fIYD0TlNW_bvH5_yB10ofg=.p12",
+          "storePassword": "0000001B6DB908FA0F76E7BABF2710A6A1B2B21E97D8AEDEF2D5599763D76736A1FD0135CA10376AA6B252"
         }
       }
     ],
