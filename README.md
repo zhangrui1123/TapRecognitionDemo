@@ -8,7 +8,7 @@ The model is stateful. Replacing only the `.ms` file is not sufficient unless it
 
 | Item | Current value |
 | --- | --- |
-| Source checkpoint | `TapRecognition/testing_checkpoints/(4)lstm64d8/best.pt` |
+| Source checkpoint | `TapRecognition/testing_checkpoints/lstm64d8/best.pt` |
 | Checkpoint epoch | 36 |
 | Checkpoint SHA-256 | `7e278b3aeca5f2667079171546ebe3272bcfa9d01301b66f3a3c92191dc1efe2` |
 | Bundled model | `entry/src/main/resources/rawfile/tap_step.ms` |
