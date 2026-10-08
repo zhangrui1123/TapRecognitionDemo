@@ -27,6 +27,7 @@ function mockModel(features) {
   }
   const inputs = names.map((name, i) => tensor(name, shapes[i]));
   return { inputs, calls: [], block: null, badOutput: false,
+    probabilities: new Float32Array([0.8, 0.1, 0.1]),
     getInputs() { return inputs; },
     async predict(values) {
       const snapshot = values.map(value => value.data.slice());
@@ -36,7 +37,7 @@ function mockModel(features) {
         this.block = null;
         await wait;
       }
-      const outputs = [tensor('prob', [1, 1, 3], new Float32Array([0.8, 0.1, 0.1])),
+      const outputs = [tensor('prob', [1, 1, 3], this.probabilities),
         tensor('h_out', [1, 1, 64], new Float32Array(64).fill(snapshot[2][0] + 1)),
         tensor('c_out', [1, 1, 64], new Float32Array(64).fill(snapshot[3][0] + 1)),
         tensor('cnn_buffer_out', [1, 32, 29], new Float32Array(928).fill(snapshot[1][0] + 1))];
@@ -184,6 +185,30 @@ test('wrong artifact cannot activate; failed inference resets every state', asyn
   await fixture.detector.processSample(sample);
   assert.equal(model.calls[1][2][0], 0);
   assert.equal(model.calls[1][5][0], 0);
+});
+
+test('threshold crossings emit immediately and use a shared refractory period', async () => {
+  const fixture = setup();
+  const model = await fixture.activate(false);
+  const callbacks = [];
+  fixture.detector.setCallback(result => callbacks.push(result));
+  model.probabilities = new Float32Array([0.1, 0.66, 0.2]);
+  await fixture.detector.processSample(sample);
+  assert.equal(callbacks[0].triggered, true);
+  assert.equal(callbacks[0].frameIndex, 0);
+  assert.equal(callbacks[0].classId, 1);
+  assert.ok(Math.abs(callbacks[0].probability - 0.66) < 1e-6);
+
+  model.probabilities = new Float32Array([0.1, 0.1, 0.9]);
+  for (let frame = 1; frame < 50; frame++) {
+    await fixture.detector.processSample(sample);
+  }
+  assert.equal(callbacks.filter(result => result.triggered).length, 1);
+  await fixture.detector.processSample(sample);
+  assert.equal(callbacks[50].triggered, true);
+  assert.equal(callbacks[50].frameIndex, 50);
+  assert.equal(callbacks[50].classId, 2);
+  assert.ok(Math.abs(callbacks[50].probability - 0.9) < 1e-6);
 });
 
 test('a stuck prediction resets rather than retaining more than one second of stale samples', async () => {

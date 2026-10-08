@@ -8,7 +8,6 @@ const RECEPTIVE_FIELD: number = 29;
 const LSTM_HIDDEN: number = 64;
 const LSTM_LAYERS: number = 1;
 const SAMPLE_RATE: number = 100.0;
-const LOOK_AHEAD_FRAMES: number = 12;
 const REFRACTORY_FRAMES: number = Math.round(0.5 * SAMPLE_RATE);
 // A queue over one second means inference has already fallen out of real time.
 // Resetting is safer than silently reporting old sensor data indefinitely.
@@ -44,10 +43,6 @@ export class TapDetector {
   private pendingSamples: StreamImuSample[] = [];
   private onDetection: DetectionCallback | null = null;
 
-  private pendingStart: number = -1;
-  private pendingBestP: number = -1;
-  private pendingBestClass: number = 0;
-  private pendingBestFrame: number = -1;
   private latestClassId: number = 0;
   private emitClassId: number = 0;
   private emitProbability: number = 0;
@@ -110,10 +105,6 @@ export class TapDetector {
     this.featureReady.fill(0);
     this.accepting = this.model !== null;
     this.pendingSamples = [];
-    this.pendingStart = -1;
-    this.pendingBestP = -1;
-    this.pendingBestClass = 0;
-    this.pendingBestFrame = -1;
     this.latestClassId = 0;
     this.emitClassId = 0;
     this.emitProbability = 0;
@@ -276,51 +267,27 @@ export class TapDetector {
     }
   }
 
-  private considerCandidate(left: number, right: number, frame: number): void {
-    // Same eligible-peak selection and tie order (left first) as offline
-    // emit_alarms_pair: ineligible sides do not compete for the alarm.
-    if (left >= this.profile.leftThreshold && left > this.pendingBestP) {
-      this.pendingBestP = left;
-      this.pendingBestClass = 1;
-      this.pendingBestFrame = frame;
-    }
-    if (right >= this.profile.rightThreshold && right > this.pendingBestP) {
-      this.pendingBestP = right;
-      this.pendingBestClass = 2;
-      this.pendingBestFrame = frame;
-    }
-  }
-
-  private emitPending(frame: number): boolean {
-    this.emitClassId = this.pendingBestClass;
-    this.emitProbability = this.pendingBestP;
-    // Shared refractory: resume at max(emission + 1, chosen peak + 50).
-    this.refractoryUntilFrame = Math.max(frame + 1, this.pendingBestFrame + REFRACTORY_FRAMES);
-    this.pendingStart = -1;
-    this.pendingBestP = -1;
-    this.pendingBestClass = 0;
-    this.pendingBestFrame = -1;
-    return true;
-  }
-
   private applyAlarmPolicy(left: number, right: number, frame: number): boolean {
-    if (this.pendingStart >= 0) {
-      this.considerCandidate(left, right, frame);
-      if (frame >= this.pendingStart + LOOK_AHEAD_FRAMES) {
-        return this.emitPending(frame);
-      }
-      return false;
-    }
-
     if (frame < this.refractoryUntilFrame) {
       return false;
     }
 
-    if (left >= this.profile.leftThreshold || right >= this.profile.rightThreshold) {
-      this.pendingStart = frame;
-      this.considerCandidate(left, right, frame);
+    // Emit on the threshold-crossing frame. Right replaces left only when it is
+    // strictly higher, so an equal-probability tie remains left-biased.
+    this.emitClassId = 0;
+    this.emitProbability = -1;
+    if (left >= this.profile.leftThreshold) {
+      this.emitClassId = 1;
+      this.emitProbability = left;
     }
-
+    if (right >= this.profile.rightThreshold && right > this.emitProbability) {
+      this.emitClassId = 2;
+      this.emitProbability = right;
+    }
+    if (this.emitClassId !== 0) {
+      this.refractoryUntilFrame = frame + REFRACTORY_FRAMES;
+      return true;
+    }
     return false;
   }
 }

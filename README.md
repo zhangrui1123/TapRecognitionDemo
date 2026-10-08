@@ -180,13 +180,13 @@ The model returns per-frame class probabilities. It does not emit an alarm itsel
 | --- | --- |
 | Left threshold | `0.65` |
 | Right threshold | `0.51` |
-| Look-ahead | 12 frames, or 120 ms at 100 Hz |
+| Alarm emission | Immediate on a threshold crossing |
 | Refractory period | 50 frames, or 0.5 seconds |
 | Refractory scope | Shared between left and right alarms |
 
-On the first threshold crossing, the detector opens a 12-frame look-ahead window. It selects the highest eligible left/right probability in that window and emits the selected class after the window closes. Ties resolve to left because left is considered first. The refractory period begins from the selected peak, while also ensuring at least one frame after emission.
+On a threshold crossing, the detector emits in that same frame. If both sides are eligible, it selects the higher probability; ties resolve to left. The shared refractory period begins immediately after emission.
 
-Both profiles use the user-selected demo thresholds: left `0.65`, right `0.51`. The saved raw baseline's `max_f1 / lookahead_12f` selection was `0.55/0.55`. Edit per-profile thresholds in `TapModelProfiles.ets` and evaluate recall/false alarms independently of conversion equivalence.
+Both profiles use the user-selected demo thresholds: left `0.65`, right `0.51`. The saved raw baseline's historical max-F1 threshold was `0.55/0.55`. Edit per-profile thresholds in `TapModelProfiles.ets` and evaluate recall/false alarms independently of conversion equivalence.
 
 ## Export a New LSTM Checkpoint
 
@@ -316,7 +316,7 @@ Perform physical testing after every model or preprocessing migration:
 1. Confirm the model loads and the IMU stream starts.
 2. Test left and right double taps in the intended device orientation and grip.
 3. Test representative negative motion such as walking, shaking, handling, and screen interaction.
-4. Check that the 120 ms look-ahead latency and 0.5 second shared refractory behavior are acceptable.
+4. Check that immediate alarms and the 0.5 second shared refractory behavior are acceptable.
 5. Capture and label new device recordings if the sensor axes, units, rate, or hardware differ from the training data.
 
 The Linux C-runtime verifier validates the model file, but it does not validate HarmonyOS packaging, sensor calibration, permission behavior, or the device's real-time performance.

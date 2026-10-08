@@ -56,6 +56,6 @@
   "signed_hap_build": "passed",
   "physical_device_validation": "pending",
   "thresholds": {"left": 0.49, "right": 0.49, "retuned_for_feature_checkpoint": false},
-  "lookahead_frames": 12,
+  "historical_lookahead_frames": 12,
   "shared_refractory_frames": 50
 }
