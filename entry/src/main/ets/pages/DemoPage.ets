@@ -13,6 +13,7 @@ import { KyotoPost } from '../components/KyotoPost';
 import { FlowEffects } from '../effects/FlowEffects';
 import { ImuStreamCollector } from '../model/ImuStreamCollector';
 import { TapDetector } from '../model/TapDetector';
+import { DEFAULT_TAP_MODEL, getTapModelProfile, TapModelVariant } from '../model/TapModelProfiles';
 
 @Entry
 @Component
@@ -29,14 +30,22 @@ struct DemoPage {
   private clockTimer: number = -1;
   private controller: hdsEffect.ShaderEffectController | undefined = undefined;
   private flowEffect: VisualEffect | undefined = undefined;
+  private pageActive: boolean = false;
+  private detectionGeneration: number = 0;
+  private sensorStart: Promise<void> | null = null;
+  private probabilityTimes: number[] = [];
+  private probabilityValues: number[] = [];
 
   private readonly KNOCK_LOCK_DURATION: number = 500;
   private readonly SHRINK_RATIO: number = 1 / 3;
   private readonly CORNER_RADIUS: number = 32;
   private readonly STATUS_BAR_HEIGHT: number = 44;
   private readonly CAMERA_INSET: number = 50;
+  private readonly PROBABILITY_WINDOW_MS: number = 150;
 
   @State private modelReady: boolean = false;
+  @State private modelVariant: TapModelVariant = DEFAULT_TAP_MODEL;
+  @State private modelSwitching: boolean = false;
   @State private modelError: ResourceStr = '';
   @State private isDetecting: boolean = false;
   @State private probability: number = 0;
@@ -57,6 +66,7 @@ struct DemoPage {
   @State private edgeHintOpacity: number = 0.55;
 
   async aboutToAppear(): Promise<void> {
+    this.pageActive = true;
     this.uiContext = getContext(this) as common.UIAbilityContext;
     this.initFlowEffect();
     try {
@@ -72,6 +82,7 @@ struct DemoPage {
   }
 
   aboutToDisappear(): void {
+    this.pageActive = false;
     this.stopDetection();
     this.stopGripDetection();
     if (this.clockTimer !== -1) {
@@ -105,21 +116,52 @@ struct DemoPage {
     this.clock = (hh < 10 ? `0${hh}` : `${hh}`) + ':' + (mm < 10 ? `0${mm}` : `${mm}`);
   }
 
-  private async loadModel(): Promise<void> {
+  private async loadModel(variant: TapModelVariant = this.modelVariant): Promise<void> {
+    if (this.modelSwitching) {
+      return;
+    }
+    this.modelSwitching = true;
+    this.modelReady = false;
     try {
+      this.stopDetection();
+      // A start can still be between the gyro and accelerometer subscriptions.
+      // Wait for it to finish stopping before starting the replacement stream.
+      const starting = this.sensorStart;
+      if (starting !== null) {
+        await starting;
+      }
+      await this.tapDetector.pause();
+      this.modelVariant = variant;
       if (!this.uiContext) {
         throw new Error('UI context unavailable');
       }
-      const modelBuffer = await this.uiContext.resourceManager.getRawFileContent('tap_step.ms');
-      await this.tapDetector.loadModel(modelBuffer.buffer as ArrayBuffer);
+      const profile = getTapModelProfile(this.modelVariant);
+      const modelBuffer = await this.uiContext.resourceManager.getRawFileContent(profile.fileName);
+      await this.tapDetector.loadModel(modelBuffer.buffer as ArrayBuffer, this.modelVariant);
       this.modelReady = true;
       this.modelError = '';
-      this.startDetection();
+      if (this.pageActive) {
+        this.startDetection();
+      } else {
+        await this.tapDetector.pause();
+      }
     } catch (error) {
       this.modelReady = false;
       this.modelError = $r('app.string.model_error');
       console.error('Failed to load tap model:', JSON.stringify(error));
+    } finally {
+      this.modelSwitching = false;
     }
+  }
+
+  private async switchModel(): Promise<void> {
+    if (this.modelSwitching) {
+      return;
+    }
+    this.detectionCount = 0;
+    this.lastDetectionLabel = '';
+    const variant = this.modelVariant === TapModelVariant.Features ? TapModelVariant.Raw : TapModelVariant.Features;
+    await this.loadModel(variant);
   }
 
   private startDetection(): void {
@@ -127,8 +169,11 @@ struct DemoPage {
       return;
     }
     this.tapDetector.reset();
+    this.probabilityTimes = [];
+    this.probabilityValues = [];
+    const generation = ++this.detectionGeneration;
     this.tapDetector.setCallback((result) => {
-      this.probability = result.probability;
+      this.updateProbabilityPeak(result.probability);
       if (result.triggered) {
         const hand = result.classId === 2 ? 'right' : 'left';
         const label = result.classId === 2 ? '右敲' : '左敲';
@@ -141,20 +186,41 @@ struct DemoPage {
     this.imuCollector.setCallback((sample) => {
       this.tapDetector.processSample(sample);
     });
-    this.imuCollector.start().then(() => {
-      this.isDetecting = true;
+    this.sensorStart = this.imuCollector.start().then(() => {
+      if (this.pageActive && generation === this.detectionGeneration) {
+        this.isDetecting = true;
+      } else {
+        this.imuCollector.stop();
+        this.tapDetector.pause();
+      }
     }).catch((error: object) => {
+      this.imuCollector.stop();
+      this.tapDetector.pause();
       console.error('Failed to start IMU stream:', JSON.stringify(error));
+    }).finally(() => {
+      this.sensorStart = null;
     });
   }
 
   private stopDetection(): void {
-    if (!this.isDetecting) {
-      return;
-    }
+    this.detectionGeneration += 1;
+    this.tapDetector.pause();
     this.imuCollector.stop();
     this.isDetecting = false;
     this.probability = 0;
+    this.probabilityTimes = [];
+    this.probabilityValues = [];
+  }
+
+  private updateProbabilityPeak(probability: number): void {
+    const now = Date.now();
+    this.probabilityTimes.push(now);
+    this.probabilityValues.push(probability);
+    while (this.probabilityTimes.length > 0 && this.probabilityTimes[0] < now - this.PROBABILITY_WINDOW_MS) {
+      this.probabilityTimes.shift();
+      this.probabilityValues.shift();
+    }
+    this.probability = Math.max(...this.probabilityValues);
   }
 
   private showToast(text: string): void {
@@ -618,11 +684,20 @@ struct DemoPage {
           .fontWeight(FontWeight.Medium)
           .fontColor('#E2E8F0')
           .width('100%')
+        Text(getTapModelProfile(this.modelVariant).label)
+          .fontSize(12)
+          .fontColor('#22D3EE')
+          .width('100%')
+        Button(this.modelSwitching ? '切换中…' :
+          (this.modelVariant === TapModelVariant.Features ? '切回原始 IMU 模型' : '切换特征 IMU 模型'))
+          .fontSize(12)
+          .enabled(!this.modelSwitching)
+          .onClick(() => this.switchModel())
         Text(`模型 ${this.modelReady ? '✓' : '✗'}  ·  采集 ${this.isDetecting ? '✓' : '✗'}`)
           .fontSize(12)
           .fontColor('#94A3B8')
           .width('100%')
-        Text(`置信度 ${(this.probability * 100).toFixed(0)}%  ·  触发 ${this.detectionCount} 次`)
+        Text(`150ms 峰值 ${(this.probability * 100).toFixed(0)}%  ·  触发 ${this.detectionCount} 次`)
           .fontSize(12)
           .fontColor('#94A3B8')
           .width('100%')
@@ -653,6 +728,6 @@ struct DemoPage {
     .justifyContent(FlexAlign.End)
     .alignItems(HorizontalAlign.Start)
     .padding({ left: 12, bottom: 78 })
-    .hitTestBehavior(HitTestMode.None)
+    .hitTestBehavior(HitTestMode.Transparent)
   }
 }

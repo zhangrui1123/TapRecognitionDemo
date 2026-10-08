@@ -1,0 +1,198 @@
+[
+  {
+    "variant": "features",
+    "name": "fresh",
+    "frames": 600,
+    "elapsedMs": 6001,
+    "eventPeaks": [
+      0.8410623669624329,
+      0.9072154760360718
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0
+  },
+  {
+    "variant": "features",
+    "name": "constant_30s_continuous",
+    "frames": 600,
+    "elapsedMs": 6004,
+    "eventPeaks": [
+      0.8429357409477234,
+      0.9072216749191284
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0.03866475261747837
+  },
+  {
+    "variant": "features",
+    "name": "constant_30s_reset",
+    "frames": 600,
+    "elapsedMs": 6004,
+    "eventPeaks": [
+      0.8410623669624329,
+      0.9072154760360718
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0
+  },
+  {
+    "variant": "features",
+    "name": "constant_30s_reload",
+    "frames": 600,
+    "elapsedMs": 6004,
+    "eventPeaks": [
+      0.8410623669624329,
+      0.9072154760360718
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0
+  },
+  {
+    "variant": "features",
+    "name": "recorded_quiet_60s_continuous",
+    "frames": 600,
+    "elapsedMs": 6004,
+    "eventPeaks": [
+      0.8422623872756958,
+      0.9072220921516418
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0.04534519836306572
+  },
+  {
+    "variant": "features",
+    "name": "recorded_quiet_60s_reset",
+    "frames": 600,
+    "elapsedMs": 6002,
+    "eventPeaks": [
+      0.8410623669624329,
+      0.9072154760360718
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0
+  },
+  {
+    "variant": "features",
+    "name": "recorded_quiet_60s_reload",
+    "frames": 600,
+    "elapsedMs": 6004,
+    "eventPeaks": [
+      0.8410623669624329,
+      0.9072154760360718
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0
+  },
+  {
+    "variant": "raw",
+    "name": "fresh",
+    "frames": 600,
+    "elapsedMs": 6000,
+    "eventPeaks": [
+      0.9547843933105469,
+      0.9503494501113892
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0
+  },
+  {
+    "variant": "raw",
+    "name": "constant_30s_continuous",
+    "frames": 600,
+    "elapsedMs": 6004,
+    "eventPeaks": [
+      0.9504339694976807,
+      0.9503504037857056
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0.4363741874694824
+  },
+  {
+    "variant": "raw",
+    "name": "constant_30s_reset",
+    "frames": 600,
+    "elapsedMs": 6004,
+    "eventPeaks": [
+      0.9547843933105469,
+      0.9503494501113892
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0
+  },
+  {
+    "variant": "raw",
+    "name": "constant_30s_reload",
+    "frames": 600,
+    "elapsedMs": 6004,
+    "eventPeaks": [
+      0.9547843933105469,
+      0.9503494501113892
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0
+  },
+  {
+    "variant": "raw",
+    "name": "recorded_quiet_60s_continuous",
+    "frames": 600,
+    "elapsedMs": 6005,
+    "eventPeaks": [
+      0.949944794178009,
+      0.9503505825996399
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0.18215078115463257
+  },
+  {
+    "variant": "raw",
+    "name": "recorded_quiet_60s_reset",
+    "frames": 600,
+    "elapsedMs": 6003,
+    "eventPeaks": [
+      0.9547843933105469,
+      0.9503494501113892
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0
+  },
+  {
+    "variant": "raw",
+    "name": "recorded_quiet_60s_reload",
+    "frames": 600,
+    "elapsedMs": 6004,
+    "eventPeaks": [
+      0.9547843933105469,
+      0.9503494501113892
+    ],
+    "alarms": 2,
+    "inferenceErrors": 0,
+    "featureInputError": 0,
+    "maxProbabilityChangeFromFresh": 0
+  }
+]
